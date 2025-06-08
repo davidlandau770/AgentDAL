@@ -16,6 +16,7 @@ namespace c__SQL.DAL
         private string connStr = "server=localhost;user=root;password=;database=eagle_eye_db";
         private MySqlConnection _conn;
 
+
         public MySqlConnection OpenConnection()
         {
             if (_conn == null)
@@ -57,7 +58,7 @@ namespace c__SQL.DAL
             }
         }
 
-        public List<Agent> GetAgents(string query = "SELECT * FROM eagle_eye")
+        public List<Agent> GetAgents(string query = "SELECT * FROM agent")
         {
             List<Agent> agentsList = new List<Agent>();
             MySqlCommand cmd = null;
@@ -70,12 +71,12 @@ namespace c__SQL.DAL
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    //int id = reader.GetInt32("id");
+                    int id = reader.GetInt32("id");
                     int codeName = reader.GetInt32("codeName");
-                    string name = reader.GetString("name");
+                    string name = reader.GetString("realName");
                     string location = reader.GetString("location");
                     string status = reader.GetString("status");
-                    string nmc = reader.GetString("missionsCompleted");
+                    int nmc = reader.GetInt32("missionsCompleted");
 
                     Agent agents = new Agent(codeName, name, location, status, nmc);
                     agentsList.Add(agents);
@@ -95,6 +96,78 @@ namespace c__SQL.DAL
             }
 
             return agentsList;
+        }
+
+        public void InsertAgent(Agent agent)
+        {
+            MySqlCommand cmd = null;
+            try
+            {
+                OpenConnection();
+
+                string query = "INSERT INTO agent (codeName, realName, location, status, missionsCompleted) VALUES (@codeName, @realName, @location, @status, @missionsCompleted);";
+
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@codeName", agent.CodeName);
+                cmd.Parameters.AddWithValue("@realName", agent.RealName);
+                cmd.Parameters.AddWithValue("@location", agent.Location);
+                cmd.Parameters.AddWithValue("@status", agent.Status);
+                cmd.Parameters.AddWithValue("@missionsCompleted", agent.MissionsCompleted);
+
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Agent inserted successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while inserting agent: {ex.Message}");
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        public void UpdateAgent(Agent agent)
+        {
+            MySqlCommand cmd = null;
+            try
+            {
+                OpenConnection();
+
+                string query = "UPDATE agent SET codeName = @codeName, realName = @realName, location = @location, status = @status, missionsCompleted = @missionsCompleted WHERE id = @id;";
+
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@codeName", agent.CodeName);
+                cmd.Parameters.AddWithValue("@realName", agent.RealName);
+                cmd.Parameters.AddWithValue("@location", agent.Location);
+                cmd.Parameters.AddWithValue("@status", agent.Status);
+                cmd.Parameters.AddWithValue("@missionsCompleted", agent.MissionsCompleted);
+                //cmd.Parameters.AddWithValue("@id", agent.Id);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                    Console.WriteLine("Agent updated successfully.");
+                else
+                    Console.WriteLine("No agent found with the given ID.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while updating agent: {ex.Message}");
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        public void PrintAgent()
+        {
+            List<Agent> agents = GetAgents();
+            foreach (Agent agent in agents)
+            {
+                agent.PrintDetails();
+            }
         }
 
         public void Creat_table(string tableName)

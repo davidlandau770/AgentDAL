@@ -4,19 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using c__SQL.DAL;
+using MySql.Data.MySqlClient;
 
 namespace c__SQL.Models
 {
     internal class Agent
     {
         private int Id { get; set; }
-        private int CodeName { get; set; }
-        private string RealName { get; set; }
-        private string Location { get; set; }
-        private string Status { get; set; }
-        private string MissionsCompleted { get; set; }
+        public int CodeName { get; private set; }
+        public string RealName { get; private set; }
+        public string Location { get; private set; }
+        public string Status { get; private set; }
+        public int MissionsCompleted { get; private set; }
 
-        public Agent(int codeName, string name, string location, string status, string nmc)
+        public Agent(int codeName, string name, string location, string status, int nmc)
         {
             CodeName = codeName;
             RealName = name;
@@ -24,10 +26,15 @@ namespace c__SQL.Models
             Status = status;
             MissionsCompleted = nmc;
         }
+
         public void PrintDetails()
         {
-            Console.WriteLine($"id: {Id}, code name: {CodeName}, name: {RealName}, location: {Location}, status: {Status}, number missions completed: {MissionsCompleted}");
+            Console.WriteLine(this.ToString());
         }
 
+        public override string ToString()
+        {
+            return $"code name: {CodeName}, name: {RealName}, location: {Location}, status: {Status}, number missions completed: {MissionsCompleted}";
+        }
     }
 }
