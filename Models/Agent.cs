@@ -11,20 +11,21 @@ namespace c__SQL.Models
 {
     internal class Agent
     {
-        private int Id { get; set; }
+        public int Id { get; private set; }
         public int CodeName { get; private set; }
         public string RealName { get; private set; }
         public string Location { get; private set; }
         public string Status { get; private set; }
         public int MissionsCompleted { get; private set; }
 
-        public Agent(int codeName, string name, string location, string status, int nmc)
+        public Agent(int id, int codeName, string name, string location, string status, int missionsCompleted)
         {
+            Id = id;
             CodeName = codeName;
             RealName = name;
             Location = location;
             Status = status;
-            MissionsCompleted = nmc;
+            MissionsCompleted = missionsCompleted;
         }
 
         public void PrintDetails()

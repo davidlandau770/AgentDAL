@@ -16,7 +16,6 @@ namespace c__SQL.DAL
         private string connStr = "server=localhost;user=root;password=;database=eagle_eye_db";
         private MySqlConnection _conn;
 
-
         public MySqlConnection OpenConnection()
         {
             if (_conn == null)
@@ -76,9 +75,9 @@ namespace c__SQL.DAL
                     string name = reader.GetString("realName");
                     string location = reader.GetString("location");
                     string status = reader.GetString("status");
-                    int nmc = reader.GetInt32("missionsCompleted");
+                    int missionsCompleted = reader.GetInt32("missionsCompleted");
 
-                    Agent agents = new Agent(codeName, name, location, status, nmc);
+                    Agent agents = new Agent(id, codeName, name, location, status, missionsCompleted);
                     agentsList.Add(agents);
                 }
                 Console.WriteLine("Connection successful.");
@@ -105,7 +104,7 @@ namespace c__SQL.DAL
             {
                 OpenConnection();
 
-                string query = "INSERT INTO agent (codeName, realName, location, status, missionsCompleted) VALUES (@codeName, @realName, @location, @status, @missionsCompleted);";
+                string query = "INSERT INTO agent (id, codeName, realName, location, status, missionsCompleted) VALUES (@id, @codeName, @realName, @location, @status, @missionsCompleted);";
 
                 cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@codeName", agent.CodeName);
@@ -113,6 +112,7 @@ namespace c__SQL.DAL
                 cmd.Parameters.AddWithValue("@location", agent.Location);
                 cmd.Parameters.AddWithValue("@status", agent.Status);
                 cmd.Parameters.AddWithValue("@missionsCompleted", agent.MissionsCompleted);
+                cmd.Parameters.AddWithValue("@id", agent.Id);
 
                 cmd.ExecuteNonQuery();
                 Console.WriteLine("Agent inserted successfully.");
@@ -142,7 +142,7 @@ namespace c__SQL.DAL
                 cmd.Parameters.AddWithValue("@location", agent.Location);
                 cmd.Parameters.AddWithValue("@status", agent.Status);
                 cmd.Parameters.AddWithValue("@missionsCompleted", agent.MissionsCompleted);
-                //cmd.Parameters.AddWithValue("@id", agent.Id);
+                cmd.Parameters.AddWithValue("@id", agent.Id);
 
                 int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -161,7 +161,7 @@ namespace c__SQL.DAL
             }
         }
 
-        public void PrintAgent()
+        public void PrintAgents()
         {
             List<Agent> agents = GetAgents();
             foreach (Agent agent in agents)

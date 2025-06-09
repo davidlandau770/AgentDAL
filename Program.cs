@@ -12,15 +12,19 @@ class Program
         AgentDAL dal = new AgentDAL();
         dal.Creat_table("agents");
 
-        Agent agent1 = new Agent(101, "david", "bney brak", "Active", 12);
-        Agent agent2 = new Agent(102, "avishay", "lod", "Injured", 5);
-        Agent agent3 = new Agent(103, "landau", "new york", "Missing", 5);
+        Agent agent1 = new Agent(1, 101, "david", "bney brak", "Active", 12);
+        Agent agent2 = new Agent(2, 102, "avishay", "lod", "Injured", 5);
+        Agent agent3 = new Agent(3, 103, "landau", "new york", "Missing", 5);
 
         dal.InsertAgent(agent1);
         dal.InsertAgent(agent2);
         dal.InsertAgent(agent3);
 
-        dal.PrintAgent();
+        dal.PrintAgents();
+
+        agent2 = new Agent(2, 102, "avishay", "petach tikva", "Injured", 5);
+        dal.UpdateAgent(agent2);
+        dal.PrintAgents();
 
         // ישן - הכל עובד אבל בלי שימוש גורף בקלאס אג'נט. מתאים לכל סוג וגודל של טבלה
         //dal.DeleteAllRows("agent");
